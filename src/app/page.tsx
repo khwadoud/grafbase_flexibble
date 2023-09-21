@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/libs/session";
 import Categories from "@/components/Categories";
 import LoadMore from "@/components/LoadMore";
+import GetCurrentUser from "@/actions/getCurrentUser";
 
 type ProjectSearch = {
     projectSearch: {
@@ -29,9 +30,12 @@ export const dynamicParams = true;
 export const revalidate = 0;
 
 const Home = async ({ searchParams: { category, endcursor } }: HomeProps) => {
+    const session = await getCurrentUser()
+    log("session Home ==>",{session})
+    
     const data = await FetchAllProjects(category, endcursor) as ProjectSearch
     console.log("datta ==> ", data);
-
+    
     const projectsToDisplay = data?.projectSearch?.edges || []
 
     const pagination = data?.projectSearch?.pageInfo
